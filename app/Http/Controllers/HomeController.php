@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Category;
 
 class HomeController extends Controller
 {
@@ -23,6 +23,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // $categories = Category::all();
+        //$categories = Category::with('parent.parent.parent.parent')->get()->toArray();
+        $categories = Category::with('childrenRecursive')->get();
+        // echo "<pre>";
+        // print_r($categories);
+        // exit;
+        return view('home', ["categories" => $categories]);
     }
 }
