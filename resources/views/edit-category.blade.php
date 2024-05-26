@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <form action="{{ route('update-category') }}" method="post">
-                    <input type="text" name="category_id" value="{{ $edit_category['category_id'] }}">
+                    <input type="hidden" name="category_id" value="{{ $edit_category['category_id'] }}">
                     @csrf
                     <div class="form-group">
                         <label>Category Name *</label>
