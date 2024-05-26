@@ -32,20 +32,12 @@
                             <tr>
                                 <td>{{ $category['category_id'] }}</td>
                                 <td>
-
-                                    @if ($category['children_recursive'])
-                                        @foreach ($category['children_recursive'] as $childs)
-                                            {{ $childs['name'] }}
-                                        @endforeach
-                                    @else
-                                        {{ $category['name'] }}
-                                    @endif
+                                    {{ $category['children_recursive_name'] }}
                                 </td>
                                 <td>{{ $category['status'] == 1 ? 'Enabled' : 'Disabled' }}</td>
                                 <td>{{ $category['parent_id'] }}</td>
                                 <td>
                                     <a href="{{ url('/') }}" class="btn btn-primary btn-sm">Edit</a>
-                                    <a href="{{ url('/') }}" class="btn btn-danger btn-sm">Delete</a>
                                 </td>
                             </tr>
                         @endforeach

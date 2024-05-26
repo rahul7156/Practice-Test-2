@@ -9,17 +9,24 @@ class CategoryController extends Controller
 {
     public function add(Request $request)
     {
-        //$all_parent_categories = Category::all();
-        $all_parent_categories = Category::with('parent')->get();
+        $all_parent_categories = Category::with('childrenRecursive')->get()->toArray();
+
+        foreach ($all_parent_categories as $key => $category) {
+            $children_recursive_name = $this->nestedList($category);
+            $children_recursive_name_arr = explode(" > ", $children_recursive_name);
+            sort($children_recursive_name_arr);
+            $children_recursive_name_str = implode(" > ", array_filter($children_recursive_name_arr));
+            $all_parent_categories[$key]['children_recursive_name'] = $children_recursive_name_str;
+        }
         // echo "<pre>";
-        // print_r($all_categories);
+        // print_r($all_parent_categories);
         // exit;
         return view("add-category", ['all_parent_categories' => $all_parent_categories]);
     }
 
     public function create(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required',
             'status' => 'required',
         ]);
@@ -27,5 +34,21 @@ class CategoryController extends Controller
         $category = new Category($data);
         $category->save();
         return redirect()->route('home');
+    }
+
+    public function nestedList(array $category)
+    {
+        $r = '';
+        foreach ($category as $key => $value) {
+            if (is_array($value)) {
+                $r .= $this->nestedList($value);
+                continue;
+            } else {
+                if ($key == "name") {
+                    $r .= $value . " > ";
+                }
+            }
+        }
+        return $r;
     }
 }

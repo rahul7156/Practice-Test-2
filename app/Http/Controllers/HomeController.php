@@ -23,12 +23,30 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // $categories = Category::all();
-        //$categories = Category::with('parent.parent.parent.parent')->get()->toArray();
-        $categories = Category::with('childrenRecursive')->get();
-        // echo "<pre>";
-        // print_r($categories);
-        // exit;
+        $categories = Category::with('childrenRecursive')->get()->toArray();
+        foreach ($categories as $key => $category) {
+            $children_recursive_name = $this->nestedList($category);
+            $children_recursive_name_arr = explode(" > ", $children_recursive_name);
+            sort($children_recursive_name_arr);
+            $children_recursive_name_str = implode(" > ", array_filter($children_recursive_name_arr));
+            $categories[$key]['children_recursive_name'] = $children_recursive_name_str;
+        }
         return view('home', ["categories" => $categories]);
+    }
+
+    public function nestedList(array $category)
+    {
+        $r = '';
+        foreach ($category as $key => $value) {
+            if (is_array($value)) {
+                $r .= $this->nestedList($value);
+                continue;
+            } else {
+                if ($key == "name") {
+                    $r .= $value . " > ";
+                }
+            }
+        }
+        return $r;
     }
 }

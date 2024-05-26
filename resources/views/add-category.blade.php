@@ -42,8 +42,8 @@
                         <select class="form-control form-select" name="parent_id">
                             <option value="">-- Select Category --</option>
                             @foreach ($all_parent_categories as $parent)
-                                <option value="{{ $parent->category_id }}">
-                                    {{ isset($parent->parent->name) ? $parent->parent->name . ' > ' . $parent['name'] : $parent['name'] }}
+                                <option value="{{ $parent['category_id'] }}">
+                                    {{ $parent['children_recursive_name'] }}
                                 </option>
                             @endforeach
                         </select>
