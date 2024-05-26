@@ -14,13 +14,10 @@ class CategoryController extends Controller
         foreach ($all_parent_categories as $key => $category) {
             $children_recursive_name = $this->nestedList($category);
             $children_recursive_name_arr = explode(" > ", $children_recursive_name);
-            sort($children_recursive_name_arr);
+            krsort($children_recursive_name_arr);
             $children_recursive_name_str = implode(" > ", array_filter($children_recursive_name_arr));
             $all_parent_categories[$key]['children_recursive_name'] = $children_recursive_name_str;
         }
-        // echo "<pre>";
-        // print_r($all_parent_categories);
-        // exit;
         return view("add-category", ['all_parent_categories' => $all_parent_categories]);
     }
 
@@ -50,5 +47,32 @@ class CategoryController extends Controller
             }
         }
         return $r;
+    }
+
+    public function edit($id)
+    {
+        $edit_category = Category::findOrFail($id)->toArray();
+        $all_parent_categories = Category::with('childrenRecursive')->where('category_id', '!=', $id)->get()->toArray();
+        foreach ($all_parent_categories as $key => $category) {
+            $children_recursive_name = $this->nestedList($category);
+            $children_recursive_name_arr = explode(" > ", $children_recursive_name);
+            krsort($children_recursive_name_arr);
+            $children_recursive_name_str = implode(" > ", array_filter($children_recursive_name_arr));
+            $all_parent_categories[$key]['children_recursive_name'] = $children_recursive_name_str;
+        }
+        return view("edit-category", ['edit_category' => $edit_category, 'all_parent_categories' => $all_parent_categories]);
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'status' => 'required',
+        ]);
+        $id = $request['category_id'];
+        $category = Category::find($id);
+        $category->fill($request->all());
+        $category->save();
+        return redirect()->route('home');
     }
 }

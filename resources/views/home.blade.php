@@ -37,7 +37,9 @@
                                 <td>{{ $category['status'] == 1 ? 'Enabled' : 'Disabled' }}</td>
                                 <td>{{ $category['parent_id'] }}</td>
                                 <td>
-                                    <a href="{{ url('/') }}" class="btn btn-primary btn-sm">Edit</a>
+                                    <a href="{{ url('/edit-category') . '/' . $category['category_id'] }}"
+                                        class="btn btn-primary btn-sm"> Edit
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
